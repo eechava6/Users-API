@@ -1,4 +1,7 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, set } from "mongoose";
+import { IPost } from "../interfaces/post.interface";
+
+set("useCreateIndex", true);
 
 const PostSchema = new Schema(
   {
@@ -22,4 +25,4 @@ const PostSchema = new Schema(
   { collection: "posts", timestamps: { createdAt: "created_at" } } // By default created_at but to ensure :p
 );
 
-module.exports = model("User", PostSchema);
+module.exports = model<IPost>("User", PostSchema);

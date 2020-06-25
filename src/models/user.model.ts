@@ -1,10 +1,13 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, set } from "mongoose";
 import { hashSync } from "bcrypt";
 import { saltRounds } from "../constants/bcrypt.constant";
+import { IUserDocument } from "../interfaces/user.interface";
+
+set("useCreateIndex", true);
 
 const UserSchema = new Schema(
   {
-    username: {
+    name: {
       type: String,
       trim: true,
       required: true,
@@ -26,9 +29,9 @@ const UserSchema = new Schema(
   { collection: "users" }
 );
 // hash user password before saving into database
-UserSchema.pre("save", (next) => {
-  this.password = hashSync(this.password, saltRounds);
+UserSchema.pre<IUserDocument>("save", function (next): void {
+  this.password = hashSync(this.password as string, saltRounds);
   next();
 });
 
-module.exports = model("User", UserSchema);
+export const UserModel = model<IUserDocument>("User", UserSchema);

@@ -1,5 +1,5 @@
 import app from "../app";
-
+import { connect, set } from "mongoose";
 export default class Server {
   public port: number;
 
@@ -13,6 +13,18 @@ export default class Server {
 
   start(callback: () => void) {
     //Start the app
-    app.listen(this.port, callback);
+    this.connect()
+      .then(() => {
+        console.log("Connection to Mongo Atlas was successful");
+        app.listen(this.port, callback);
+      })
+      .catch((err) => console.error(err));
+  }
+
+  private async connect() {
+    return await connect(process.env.DB as string, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
   }
 }
